@@ -1,0 +1,27 @@
+name: Build Lambda Zip
+
+# Runs whenever you push a change to the Lambda source file,
+# or manually via the "Run workflow" button on GitHub.
+on:
+  push:
+    paths:
+      - 'lambda/submit-receiver/index.mjs'
+  workflow_dispatch:
+
+jobs:
+  build-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Create zip with index.mjs at root
+        run: |
+          cd lambda/submit-receiver
+          zip -r ../../submit-receiver.zip index.mjs
+
+      - name: Upload zip as downloadable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: submit-receiver
+          path: submit-receiver.zip
